@@ -92,3 +92,7 @@ def search_maildirectory(mail_dir):
 #pd.DataFrame(feat[0]).to_csv('feature_enron2')
 #pd.DataFrame(feat[1]).to_csv('test_label_enron2')
 #print(search_maildirectory('dataset\\set2\\enron1')[1].__len__())
+#matrix_feat = pd.read_csv('feature_enron2')
+#print(matrix_feat.shape)
+#for index, row in matrix_feat.iterrows():
+#    print(str(index) + '.....' + str(row[3000]))
