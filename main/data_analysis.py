@@ -6,7 +6,8 @@ import time
 import pandas as pd
 from os import listdir
 from os.path import isfile, join
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+import pickle
 
 def make_Dictionary(train_dir):
     emails = [os.path.join(train_dir, f) for f in os.listdir(train_dir)]
@@ -30,6 +31,20 @@ def make_Dictionary(train_dir):
         dictionary.pop(key)
     dictionary = dictionary.most_common(3000)
     return dictionary
+
+
+def extract_features_tdidf(root_dir):
+    mail_list = search_maildirectory(root_dir)
+    tf_vec = TfidfVectorizer(analyzer='word')
+    super_list = list()
+    for types in mail_list:
+        for mails in types:
+            m = open(mails, "r")
+            if mails.__contains__("ham"):
+                super_list.append([m.read(), 1])
+            else:
+                super_list.append([m.read(), 0])
+    return np.array(super_list)
 
 
 def extract_features(root_dir):
@@ -64,12 +79,6 @@ def nof_directory(directory):
     return files.__len__()
 
 
-def goto(level):
-    print(os.getcwd())
-    for i in range(level):
-        os.chdir('..')
-    print(os.getcwd())
-
 def search_maildirectory(mail_dir):
     """
     searches directory with folders including emails
@@ -86,11 +95,22 @@ def search_maildirectory(mail_dir):
     return mail_list
 
 #os.chdir('..')
+#extract_features_tdidf('dataset/set2/enron5'), open('feature_enron5_tfidf', 'wb')
+#file = open('feature_enrond2_tfidf', 'rb')
+#print(pickle.load(file))
+
+
+
+
+
+
+
+
 #print(nof_directory('dataset/set1/bare/part1'))
 #extract_features('dataset/set2/enron1')
-#feat = extract_features('dataset/set2/enron2')
-#pd.DataFrame(feat[0]).to_csv('feature_enron2')
-#pd.DataFrame(feat[1]).to_csv('test_label_enron2')
+#feat = extract_features('dataset/set2/enron5')
+#pd.DataFrame(feat[0]).to_csv('feature_enron5')
+#pd.DataFrame(feat[1]).to_csv('test_label_enron5')
 #print(search_maildirectory('dataset\\set2\\enron1')[1].__len__())
 #matrix_feat = pd.read_csv('feature_enron2')
 #print(matrix_feat.shape)
