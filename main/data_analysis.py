@@ -12,39 +12,50 @@ import pickle
 def make_Dictionary(train_dir):
     emails = [os.path.join(train_dir, f) for f in os.listdir(train_dir)]
     all_words = []
-    for mail in emails:
-        with open(mail) as m:
-            for i, line in enumerate(m):
-                if i == 2:  # Body of email is only 3rd line of text file
-                    words = line.split()
-                    all_words += words
+    try:
+        for mail in emails:
+            with open(mail) as m:
+                for i, line in enumerate(m):
+                    if i == 2:  # Body of email is only 3rd line of text file
+                        words = line.split()
+                        all_words += words
 
-    dictionary = Counter(all_words)
-    removed_chars = list()
+        dictionary = Counter(all_words)
+        removed_chars = list()
 
-    for key in dictionary.keys():
-        if key.isalpha() == False:
-            removed_chars.append(key)
-        elif len(key) == 1:
-            removed_chars.append(key)
-    for key in removed_chars:
-        dictionary.pop(key)
-    dictionary = dictionary.most_common(3000)
-    return dictionary
+        for key in dictionary.keys():
+            if key.isalpha() == False:
+                removed_chars.append(key)
+            elif len(key) == 1:
+                removed_chars.append(key)
+        for key in removed_chars:
+            dictionary.pop(key)
+        dictionary = dictionary.most_common(3000)
+
+        return dictionary
+    except UnicodeDecodeError:
+        print('decodeerror')
+
+
 
 
 def extract_features_tdidf(root_dir):
     mail_list = search_maildirectory(root_dir)
-    tf_vec = TfidfVectorizer(analyzer='word')
-    super_list = list()
-    for types in mail_list:
-        for mails in types:
-            m = open(mails, "r")
-            if mails.__contains__("ham"):
-                super_list.append([m.read(), 1])
-            else:
-                super_list.append([m.read(), 0])
-    return np.array(super_list)
+    ham_list = list()
+    spam_list = list()
+    ham = True
+    try:
+        for types in mail_list:
+            for mails in types:
+                m = open(mails, "r")
+                if ham:
+                    ham_list.append([m.read(), 0])
+                else:
+                    spam_list.append([m.read(), 1])
+            ham = False
+        return pd.DataFrame(ham_list), pd.DataFrame(spam_list)
+    except UnicodeDecodeError:
+        print('decodeerror')
 
 
 def extract_features(root_dir):
@@ -98,7 +109,6 @@ def search_maildirectory(mail_dir):
 #extract_features_tdidf('dataset/set2/enron5'), open('feature_enron5_tfidf', 'wb')
 #file = open('feature_enrond2_tfidf', 'rb')
 #print(pickle.load(file))
-
 
 
 
