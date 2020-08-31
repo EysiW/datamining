@@ -118,14 +118,3 @@ for index, value in enumerate(result_list):
 # Print confusion matrix for each method
 for method in cm_dict:
     plt.plot(cm_dict[method][1], cm_dict[method][0])
-
-plt.ylim(85,100)
-print("gmail test:")
-print(model_SVC.predict(gmail_test))
-plt.legend(result_names)
-plt.title('Dependancy of training data')
-plt.xlabel('% of data used for training')
-plt.ylabel(('Precision'))
-plt.show()
-
-
