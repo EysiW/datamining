@@ -1,6 +1,6 @@
 import os
 from main.data_analysis import make_Dictionary, nof_directory, \
-    extract_features_tdidf, make_new_Dictionary, extract_new_features
+    extract_features_set2, make_new_Dictionary, extract_new_features
 import numpy as np
 from sklearn.naive_bayes import MultinomialNB, GaussianNB, BernoulliNB
 from sklearn.model_selection import KFold
@@ -15,8 +15,8 @@ from keras import layers
 import pandas as pd
 
 # Corpus
-ham_corpus2, spam_corpus2 = extract_features_tdidf('dataset\\set2\\enron2')
-ham_corpus5, spam_corpus5 = extract_features_tdidf('dataset\\set2\\enron5')
+ham_corpus2, spam_corpus2 = extract_features_set2('dataset\\set2\\enron2')
+ham_corpus5, spam_corpus5 = extract_features_set2('dataset\\set2\\enron5')
 corpus = pd.concat([ham_corpus2, ham_corpus5, spam_corpus2, spam_corpus5])
 
 

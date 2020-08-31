@@ -9,6 +9,67 @@ from os.path import isfile, join
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
 
+
+def extract_features_set1(root_dir):
+    mail_list = search_maildirectory(root_dir)
+    ham_list = list()
+    spam_list = list()
+    for parts in mail_list:
+        for mails in parts:
+            try:
+                m = open(mails, "r")
+                if mails[24] != 's':
+                    ham_list.append([m.read(), 0])
+                else:
+                    spam_list.append([m.read(), 1])
+
+            except UnicodeDecodeError:
+                print('decodeerror')
+    return pd.DataFrame(ham_list), pd.DataFrame(spam_list)
+
+
+def extract_features_set2(root_dir):
+    mail_list = search_maildirectory(root_dir)
+    ham_list = list()
+    spam_list = list()
+    ham = True
+    try:
+        for types in mail_list:
+            for mails in types:
+                m = open(mails, "r")
+                if ham:
+                    ham_list.append([m.read(), 0])
+                else:
+                    spam_list.append([m.read(), 1])
+            ham = False
+        return pd.DataFrame(ham_list), pd.DataFrame(spam_list)
+    except UnicodeDecodeError:
+        print('decodeerror')
+
+
+def nof_directory(directory):
+    files = [os.path.join(directory, f) for f in os.listdir(directory)]
+    return files.__len__()
+
+
+def search_maildirectory(mail_dir):
+    """
+    searches directory with folders with emails
+    :param mail_dir:
+    :return: list with name of emails
+    :rtype: list()
+    """
+    dir = [os.path.join(mail_dir,f) for f in os.listdir(mail_dir)]
+    mail_list = list()
+    for folders in dir:
+        files = [os.path.join(folders, f) for f in os.listdir(folders)]
+        mail_list.append(files)
+
+    return mail_list
+
+
+# The following functions were usedd for the final report, but can be used to
+# create a default feature extraction model
 def make_Dictionary(train_dir):
     emails = [os.path.join(train_dir, f) for f in os.listdir(train_dir)]
     all_words = []
@@ -79,25 +140,6 @@ def extract_new_features(corpus, dict):
         docID = docID + 1
     return features_matrix, train_labels
 
-def extract_features_tdidf(root_dir):
-    mail_list = search_maildirectory(root_dir)
-    ham_list = list()
-    spam_list = list()
-    ham = True
-    try:
-        for types in mail_list:
-            for mails in types:
-                m = open(mails, "r")
-                if ham:
-                    ham_list.append([m.read(), 0])
-                else:
-                    spam_list.append([m.read(), 1])
-            ham = False
-        return pd.DataFrame(ham_list), pd.DataFrame(spam_list)
-    except UnicodeDecodeError:
-        print('decodeerror')
-
-
 def extract_features(root_dir):
     emails = search_maildirectory(root_dir)
     nof_email = emails[0].__len__() + emails[1].__len__()
@@ -125,44 +167,9 @@ def extract_features(root_dir):
     return features_matrix, train_labels
 
 
-def nof_directory(directory):
-    files = [os.path.join(directory, f) for f in os.listdir(directory)]
-    return files.__len__()
 
 
-def search_maildirectory(mail_dir):
-    """
-    searches directory with folders including emails
-    :param mail_dir:
-    :return: list with name of emails
-    :rtype: list()
-    """
-    dir = [os.path.join(mail_dir,f) for f in os.listdir(mail_dir)]
-    mail_list = list()
-    for folders in dir:
-        files = [os.path.join(folders, f) for f in os.listdir(folders)]
-        mail_list.append(files)
-
-    return mail_list
 
 #os.chdir('..')
-#extract_features_tdidf('dataset/set2/enron5'), open('feature_enron5_tfidf', 'wb')
-#file = open('feature_enrond2_tfidf', 'rb')
-#print(pickle.load(file))
+#extract_features_set1('dataset/set1/bare')
 
-
-
-
-
-
-
-#print(nof_directory('dataset/set1/bare/part1'))
-#extract_features('dataset/set2/enron1')
-#feat = extract_features('dataset/set2/enron5')
-#pd.DataFrame(feat[0]).to_csv('feature_enron5')
-#pd.DataFrame(feat[1]).to_csv('test_label_enron5')
-#print(search_maildirectory('dataset\\set2\\enron1')[1].__len__())
-#matrix_feat = pd.read_csv('feature_enron2')
-#print(matrix_feat.shape)
-#for index, row in matrix_feat.iterrows():
-#    print(str(index) + '.....' + str(row[3000]))

@@ -1,0 +1,13 @@
+Email spam filter project:
+Author: Eystein Waade
+Student number: LJ1806202
+
+save dataset in project folder, where the code is specifik to mapfolder:
+projectfolder/dataset/set2/ is the filepath thats needed
+then in set2 the structure should be like this:
+set2/ham/ham_mails.txt
+set2/spam/spam_mails.txt
+
+if this is done the code can run automatically.
+In classification_sk.py each model is defined with its parameter
+
